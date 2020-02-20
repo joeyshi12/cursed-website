@@ -1,2 +1,2 @@
 # personal-website
-Currently still in development.
+In development.
