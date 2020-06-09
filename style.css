@@ -90,11 +90,11 @@ li {
     margin-left: auto;
     margin-right: auto;
     padding: 10px 20px;
-    width: -moz-min-content;
     background: antiquewhite;
     color: black;
     text-align: center;
     margin-top: 260px;
+    width: -moz-min-content;
 }
 
 /*Footer*/
