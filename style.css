@@ -1,4 +1,4 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,7 +16,7 @@ a {
 
 
 /*Navigator*/
-nav{
+nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -25,20 +25,20 @@ nav{
     font-family: serif;
 }
 
-.logo{
+.logo {
     text-transform: uppercase;
     letter-spacing: 5px;
     font-size: 20px;
     color: gainsboro;
 }
 
-.nav-links{
+.nav-links {
     display: flex;
     width: 50%;
     justify-content: space-around;
 }
 
-.nav-links a{
+.nav-links a {
     text-decoration: none;
 }
 
@@ -74,16 +74,13 @@ li {
     margin-top: 5%;
 }
 
-.info-box {
+.link-box {
     margin-left: auto;
     margin-right: auto;
-    padding: 10px 20px;
-    width: -moz-min-content;
-    text-align: center;
     color: black;
-    align-content: center;
+    justify-content: center;
     display: flex;
-    margin-top: 100px;
+    margin-top: 120px;
 }
 
 .contact-box {
@@ -94,7 +91,7 @@ li {
     color: black;
     text-align: center;
     margin-top: 260px;
-    width: -moz-min-content;
+    width: fit-content;
 }
 
 /*Footer*/
