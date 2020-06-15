@@ -53,10 +53,9 @@ li {
 
 
 /*Introduction block*/
-
-
 .title-container {
     background-color: cadetblue;
+    padding: 3% 3%;
 }
 
 .center {
@@ -76,11 +75,10 @@ li {
 }
 
 .link-box {
-    margin-left: auto;
-    margin-right: auto;
     justify-content: center;
     display: flex;
-    margin-top: 120px;
+    padding-top: 3%;
+    padding-bottom: 5%;
 }
 
 .contact-box {
@@ -103,6 +101,7 @@ footer {
     bottom: 0;
     width: 100%;
     text-align: center;
+    font-size: 1.2rem;
     color: gainsboro;
 }
 
