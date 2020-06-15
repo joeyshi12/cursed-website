@@ -92,6 +92,7 @@ li {
     text-align: center;
     margin-top: 260px;
     width: fit-content;
+    width: -moz-min-content;
 }
 
 /*Footer*/
