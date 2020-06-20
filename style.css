@@ -78,13 +78,10 @@ li {
 }
 
 .contact-box {
-    margin-left: auto;
-    margin-right: auto;
     padding: 10px 20px;
     background: antiquewhite;
-    color: black;
     text-align: center;
-    margin-top: 260px;
+    margin: 15rem auto;
     width: fit-content;
     width: -moz-min-content;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -98,7 +95,6 @@ footer {
     bottom: 0;
     width: 100%;
     text-align: center;
-    font-size: 1.2rem;
     color: gainsboro;
 }
 
