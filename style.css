@@ -81,8 +81,13 @@ li {
     padding: 10px 20px;
     background: antiquewhite;
     text-align: center;
-    margin: 15rem auto;
-    width: fit-content;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    /*vertical-align: auto;*/
+    /*width: fit-content;*/
     width: -moz-min-content;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
@@ -106,6 +111,8 @@ footer {
     width: 60%;
     margin-bottom: 20px;
     text-align: start;
+    padding-top: 10px;
+    padding-bottom: 20px;
 }
 
 .project-display {
