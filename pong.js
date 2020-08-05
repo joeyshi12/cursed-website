@@ -157,6 +157,7 @@ function draw() {
             opponent.dy = 0;
         }
     } else {
+        balls.push(new Ball());
         opponent.dy = 0;
     }
 
@@ -199,7 +200,6 @@ function draw() {
                 balls.splice(i, 1);
             }
     }
-
 
     // if (ball.x < 0 || ball.x + ball_diameter > width) {
     //     if (ball.x < 0) {
