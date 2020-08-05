@@ -61,9 +61,11 @@ let balls = [new Ball()];
 let tallyPlayer = 0;
 let tallyOpponent = 0;
 let bounceSound;
+let bossMusic;
 
 function preload() {
     bounceSound = loadSound('assets/bounce_sound.wav');
+    bossMusic = loadSound('assets/boss.mp3');
 }
 
 function setup() {
@@ -78,6 +80,7 @@ function keyPressed() {
         player.dy += paddle_speed;
     } else if (keyCode === 74) {
         balls.push(new Ball())
+        bossMusic.play();
     }
 }
 
