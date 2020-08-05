@@ -57,7 +57,7 @@ class Ball {
 
 let player = new Paddle(padding);
 let opponent = new Paddle(width - padding - paddle_width);
-let ball = new Ball();
+let balls = [new Ball()];
 let tallyPlayer = 0;
 let tallyOpponent = 0;
 let bounceSound;
@@ -76,6 +76,8 @@ function keyPressed() {
         player.dy -= paddle_speed;
     } else if (keyCode === 83) {
         player.dy += paddle_speed;
+    } else if (keyCode === 74) {
+        balls.push(new Ball())
     }
 }
 
@@ -96,57 +98,94 @@ function draw() {
     text(tallyOpponent, 420, 40);
     stroke(255);
     line(width / 2, 0, width / 2, height);
-    ball.draw();
+
+    for (var i = 0; i < balls.length; i++) {
+        balls[i].draw();
+    }
     player.draw();
     opponent.draw();
 
     player.update();
     opponent.update();
-    ball.update();
+    for (i = 0; i < balls.length; i++) {
+        balls[i].update();
+    }
 
-    let dy = opponent.y - ball.y + paddle_height / 2;
-    if (dy > 30) {
-        opponent.dy = -paddle_speed;
-    } else if (dy < 30) {
-        opponent.dy = paddle_speed;
+    if (balls.length !== 0) {
+        const n = balls.length;
+        var closestBall = balls[0];
+        var smallestDist = opponent.x - balls[0].x;
+        for (i = 1; i < balls.length; i++) {
+            dist = opponent.x - balls[i].x;
+            if (dist < smallestDist) {
+                closestBall = balls[i];
+                smallestDist = dist;
+            }
+        }
+
+        let dy = opponent.y - closestBall.y + paddle_height / 2;
+        if (dy > 30) {
+            opponent.dy = -paddle_speed;
+        } else if (dy < 30) {
+            opponent.dy = paddle_speed;
+        } else {
+            opponent.dy = 0;
+        }
     } else {
         opponent.dy = 0;
     }
 
-    if (player.x - buffer <= ball.x && ball.x <= player.x + paddle_width + buffer) {
-        if (player.y < ball.y && ball.y < player.y + paddle_height) {
+    for (i = 0; i < balls.length; i++) {
+        let ball = balls[i];
 
-            const t = 2 * (ball.y - player.y - paddle_height / 2) / paddle_height;
-            const angle = Math.atan(t * Math.PI / 3);
+        if (player.x - buffer <= ball.x && ball.x <= player.x + paddle_width + buffer) {
+            if (player.y < ball.y && ball.y < player.y + paddle_height) {
 
-            ball.dx = ball_speed * Math.cos(angle);
-            ball.dy = ball_speed * Math.sin(angle);
-            bounceSound.play();
+                const t = 2 * (ball.y - player.y - paddle_height / 2) / paddle_height;
+                const angle = Math.atan(t * Math.PI / 3);
+
+                ball.dx = ball_speed * Math.cos(angle);
+                ball.dy = ball_speed * Math.sin(angle);
+                bounceSound.play();
+            }
         }
+
+        if ((opponent.x - buffer <= ball.x && ball.x <= opponent.x + paddle_width + buffer)) {
+            if ((opponent.y < ball.y && ball.y < opponent.y + paddle_height) ||
+                (opponent.y < ball.y + ball_diameter && ball.y + ball_diameter < opponent.y + paddle_height)) {
+                const t = 2 * (ball.y - opponent.y - paddle_height / 2) / paddle_height;
+                const angle = Math.atan(t * Math.PI / 3);
+
+                ball.dx = -ball_speed * Math.cos(angle);
+                ball.dy = ball_speed * Math.sin(angle);
+                bounceSound.play();
+            }
+        }
+
+        if (ball.x < 0 || ball.x + ball_diameter > width) {
+                if (ball.x < 0) {
+                    ball.dx = -ball_speed;
+                    tallyOpponent += 1;
+                } else {
+                    ball.dx = ball_speed;
+                    tallyPlayer += 1;
+                }
+
+                balls.splice(i, 1);
+            }
     }
 
-    if ((opponent.x - buffer <= ball.x && ball.x <= opponent.x + paddle_width + buffer)) {
-        if ((opponent.y < ball.y && ball.y < opponent.y + paddle_height) ||
-            (opponent.y < ball.y + ball_diameter && ball.y + ball_diameter < opponent.y + paddle_height)) {
-            const t = 2 * (ball.y - opponent.y - paddle_height / 2) / paddle_height;
-            const angle = Math.atan(t * Math.PI / 3);
 
-            ball.dx = -ball_speed * Math.cos(angle);
-            ball.dy = ball_speed * Math.sin(angle);
-            bounceSound.play();
-        }
-    }
-
-    if (ball.x < 0 || ball.x + ball_diameter > width) {
-        if (ball.x < 0) {
-            ball.dx = -ball_speed;
-            tallyOpponent += 1;
-        } else {
-            ball.dx = ball_speed;
-            tallyPlayer += 1;
-        }
-        ball.dy = 0;
-        ball.x = width / 2;
-        ball.y = height / 2;
-    }
+    // if (ball.x < 0 || ball.x + ball_diameter > width) {
+    //     if (ball.x < 0) {
+    //         ball.dx = -ball_speed;
+    //         tallyOpponent += 1;
+    //     } else {
+    //         ball.dx = ball_speed;
+    //         tallyPlayer += 1;
+    //     }
+    //     ball.dy = 0;
+    //     ball.x = width / 2;
+    //     ball.y = height / 2;
+    // }
 }
