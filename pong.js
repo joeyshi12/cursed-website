@@ -76,7 +76,7 @@ function setup() {
 
 
 function spawnHell() {
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 50; i++) {
         let angle = (Math.random() - 0.5) * Math.PI;
         let ball = new Ball();
         let direction = Math.random() > 0.5? 1: -1;
@@ -84,6 +84,7 @@ function spawnHell() {
         ball.dy = ball_speed * Math.sin(angle);
         balls.push(ball);
     }
+    setTimeout(spawnHell, 600);
 }
 
 
