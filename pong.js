@@ -62,14 +62,28 @@ let tallyPlayer = 0;
 let tallyOpponent = 0;
 let bounceSound;
 let bossMusic;
+let once = true;
 
 function preload() {
     bounceSound = loadSound('assets/bounce_sound.wav');
     bossMusic = loadSound('assets/boss.mp3');
+    boss2Music = loadSound('assets/boss2.mp3');
 }
 
 function setup() {
     createCanvas(width, height);
+}
+
+
+function spawnHell() {
+    for (let i = 0; i < 200; i++) {
+        let angle = (Math.random() - 0.5) * Math.PI;
+        let ball = new Ball();
+        let direction = Math.random() > 0.5? 1: -1;
+        ball.dx = direction * ball_speed * Math.cos(angle);
+        ball.dy = ball_speed * Math.sin(angle);
+        balls.push(ball);
+    }
 }
 
 
@@ -81,6 +95,10 @@ function keyPressed() {
     } else if (keyCode === 74) {
         balls.push(new Ball())
         bossMusic.play();
+    } else if (keyCode === 75 && once) {
+        boss2Music.play();
+        setTimeout(spawnHell, 9500);
+        once = false;
     }
 }
 
@@ -127,9 +145,9 @@ function draw() {
         }
 
         let dy = opponent.y - closestBall.y + paddle_height / 2;
-        if (dy > 30) {
+        if (dy > 0) {
             opponent.dy = -paddle_speed;
-        } else if (dy < 30) {
+        } else if (dy < 0) {
             opponent.dy = paddle_speed;
         } else {
             opponent.dy = 0;
