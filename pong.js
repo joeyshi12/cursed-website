@@ -1,8 +1,8 @@
 const width = 600;
 const height = 400;
 const padding = 40;
-const paddle_width = 10;
-const paddle_height = 70;
+const paddle_width = 16;
+const paddle_height = 64;
 const paddle_speed = 6;
 const ball_diameter = 10;
 const ball_speed = 10;
@@ -68,6 +68,7 @@ function preload() {
     bounceSound = loadSound('assets/bounce_sound.wav');
     bossMusic = loadSound('assets/boss.mp3');
     boss2Music = loadSound('assets/boss2.mp3');
+    player_img = loadImage('assets/player.png');
 }
 
 function setup() {
@@ -124,7 +125,7 @@ function draw() {
     for (var i = 0; i < balls.length; i++) {
         balls[i].draw();
     }
-    player.draw();
+    image(player_img, player.x, player.y);
     opponent.draw();
 
     player.update();
