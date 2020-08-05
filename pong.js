@@ -69,6 +69,8 @@ function preload() {
     bossMusic = loadSound('assets/boss.mp3');
     boss2Music = loadSound('assets/boss2.mp3');
     player_img = loadImage('assets/player.png');
+    opponent_img = loadImage('assets/opponent.png');
+    ball_img = loadImage('assets/ball.png');
 }
 
 function setup() {
@@ -114,7 +116,7 @@ function keyReleased() {
 }
 
 function draw() {
-    background(0);
+    background(128);
     fill(255, 255, 255);
     textSize(32);
     text(tallyPlayer, 160, 40);
@@ -123,10 +125,10 @@ function draw() {
     line(width / 2, 0, width / 2, height);
 
     for (var i = 0; i < balls.length; i++) {
-        balls[i].draw();
+        image(ball_img, balls[i].x, balls[i].y);
     }
     image(player_img, player.x, player.y);
-    opponent.draw();
+    image(opponent_img, opponent.x, opponent.y);
 
     player.update();
     opponent.update();
