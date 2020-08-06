@@ -1,17 +1,18 @@
 const width = 600;
 const height = 400;
 const padding = 40;
-const paddle_width = 10;
-const paddle_height = 70;
-const paddle_speed = 8;
-const ball_diameter = 10;
-const ball_speed = 12;
+const paddleWidth = 10;
+const paddleHeight = 70;
+const paddleSpeed = 8;
+const ballDiameter = 10;
+const ballSpeed = 12;
+const maxBounceAngle = 5 * Math.PI / 12;
 const buffer = 12;
 
 class Paddle {
     constructor(x) {
         this.x = x;
-        this.y = (height - paddle_height) / 2;
+        this.y = (height - paddleHeight) / 2;
         this.dy = 0;
     }
 
@@ -20,7 +21,7 @@ class Paddle {
     }
 
     draw() {
-        rect(this.x, this.y, paddle_width, paddle_height);
+        rect(this.x, this.y, paddleWidth, paddleHeight);
     }
 }
 
@@ -32,10 +33,10 @@ class Player extends Paddle {
     }
 
     update() {
-        this.dy = this.moveUp ? -paddle_speed : 0;
-        this.dy += this.moveDown ? paddle_speed : 0;
+        this.dy = this.moveUp ? -paddleSpeed : 0;
+        this.dy += this.moveDown ? paddleSpeed : 0;
 
-        if (0 < this.y + this.dy && this.y + this.dy < height - paddle_height) {
+        if (0 < this.y + this.dy && this.y + this.dy < height - paddleHeight) {
             this.y += this.dy;
         }
     }
@@ -59,22 +60,22 @@ class Player extends Paddle {
 
 class Opponent extends Paddle {
     constructor() {
-        super(width - padding - paddle_width);
+        super(width - padding - paddleWidth);
     }
 
     update(ball) {
         this.follow(ball);
-        if (0 < this.y + this.dy && this.y + this.dy < height - paddle_height) {
+        if (0 < this.y + this.dy && this.y + this.dy < height - paddleHeight) {
             this.y += this.dy;
         }
     }
 
     follow(ball) {
-        let dy = this.y - ball.y + paddle_height / 2;
+        let dy = this.y - ball.y + paddleHeight / 2;
         if (dy > 5) {
-            this.dy = -paddle_speed;
+            this.dy = -paddleSpeed;
         } else if (dy < 5) {
-            this.dy = paddle_speed;
+            this.dy = paddleSpeed;
         } else {
             this.dy = 0;
         }
@@ -85,7 +86,7 @@ class Ball {
     constructor() {
         this.x = width / 2;
         this.y = height / 2;
-        this.dx = -ball_speed;
+        this.dx = -ballSpeed;
         this.dy = 0;
     }
 
@@ -95,13 +96,13 @@ class Ball {
 
         if (this.y <= 0) {
             this.dy = Math.abs(this.dy);
-        } else if (this.y + ball_diameter >= height) {
+        } else if (this.y + ballDiameter >= height) {
             this.dy = -Math.abs(this.dy);
         }
     }
 
     draw() {
-        circle(this.x, this.y, ball_diameter);
+        circle(this.x, this.y, ballDiameter);
     }
 }
 
@@ -120,22 +121,22 @@ class GameRun {
             this.reset();
         }
 
-        if (this.player.x <= this.ball.x && this.ball.x <= this.player.x + paddle_width + buffer) {
-            if (this.player.y < this.ball.y && this.ball.y < this.player.y + paddle_height) {
-                const t = 2 * (this.ball.y - this.player.y - paddle_height / 2) / paddle_height;
-                const angle = Math.atan(t * Math.PI / 3);
+        if (this.player.x <= this.ball.x && this.ball.x <= this.player.x + paddleWidth + buffer) {
+            if (this.player.y < this.ball.y && this.ball.y < this.player.y + paddleHeight) {
+                const t = 2 * (this.ball.y - this.player.y - paddleHeight / 2) / paddleHeight;
+                const angle = Math.atan(t * maxBounceAngle);
 
-                this.ball.dx = ball_speed * Math.cos(angle);
-                this.ball.dy = ball_speed * Math.sin(angle);
+                this.ball.dx = ballSpeed * Math.cos(angle);
+                this.ball.dy = ballSpeed * Math.sin(angle);
                 this.bounceSound.play();
             }
-        } else if (this.opponent.x - buffer <= this.ball.x && this.ball.x <= this.opponent.x + paddle_width) {
-            if (this.opponent.y < this.ball.y && this.ball.y < this.opponent.y + paddle_height) {
-                const t = 2 * (this.ball.y - this.opponent.y - paddle_height / 2) / paddle_height;
-                const angle = Math.atan(t * Math.PI / 3);
+        } else if (this.opponent.x - buffer <= this.ball.x && this.ball.x <= this.opponent.x + paddleWidth) {
+            if (this.opponent.y < this.ball.y && this.ball.y < this.opponent.y + paddleHeight) {
+                const t = 2 * (this.ball.y - this.opponent.y - paddleHeight / 2) / paddleHeight;
+                const angle = Math.atan(t * maxBounceAngle);
 
-                this.ball.dx = -ball_speed * Math.cos(angle);
-                this.ball.dy = ball_speed * Math.sin(angle);
+                this.ball.dx = -ballSpeed * Math.cos(angle);
+                this.ball.dy = ballSpeed * Math.sin(angle);
                 this.bounceSound.play();
             }
         }
@@ -147,10 +148,10 @@ class GameRun {
 
     reset() {
         if (this.ball.x < 0) {
-            this.ball.dx = ball_speed;
+            this.ball.dx = ballSpeed;
             this.tallyOpponent += 1;
         } else {
-            this.ball.dx = -ball_speed;
+            this.ball.dx = -ballSpeed;
             this.tallyPlayer += 1;
         }
 
@@ -160,7 +161,7 @@ class GameRun {
     }
 
     checkGameOver() {
-        return this.ball.x < 0 || this.ball.x + ball_diameter > width;
+        return this.ball.x < 0 || this.ball.x + ballDiameter > width;
     }
 
     keyPressed() {
