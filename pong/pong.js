@@ -147,10 +147,10 @@ class GameRun {
 
     reset() {
         if (this.ball.x < 0) {
-            this.ball.dx = -ball_speed;
+            this.ball.dx = ball_speed;
             this.tallyOpponent += 1;
         } else {
-            this.ball.dx = ball_speed;
+            this.ball.dx = -ball_speed;
             this.tallyPlayer += 1;
         }
 
