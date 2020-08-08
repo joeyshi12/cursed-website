@@ -40,22 +40,6 @@ class Player extends Paddle {
             this.y += this.dy;
         }
     }
-
-    keyPressed(key) {
-        if (keyCode === 87) {
-            this.moveUp = true;
-        } else if (keyCode === 83) {
-            this.moveDown = true;
-        }
-    }
-
-    keyReleased(key) {
-        if (keyCode === 87) {
-            this.moveUp = false;
-        } else if (keyCode === 83) {
-            this.moveDown = false;
-        }
-    }
 }
 
 class Opponent extends Paddle {
@@ -165,11 +149,19 @@ class GameRun {
     }
 
     keyPressed() {
-        this.player.keyPressed(keyCode);
+        if (keyCode === 87) {
+            this.player.moveUp = true;
+        } else if (keyCode === 83) {
+            this.player.moveDown = true;
+        }
     }
 
     keyReleased() {
-        this.player.keyReleased(keyCode);
+        if (keyCode === 87) {
+            this.player.moveUp = false;
+        } else if (keyCode === 83) {
+            this.player.moveDown = false;
+        }
     }
 
     draw() {
