@@ -90,8 +90,6 @@ class GameRun {
                 while (true) {
                     for (var i = 0; i < this.snake.size; i++) {
                         if (this.snake.xpos[0] === this.food.x && this.snake.ypos[0] === this.food.y) {
-                            this.food.x = Math.floor(Math.random() * 19 + 1);
-                            this.food.y = Math.floor(Math.random() * 19 + 1);
                             break
                         }
                     }
@@ -99,6 +97,9 @@ class GameRun {
                     if (this.snake.xpos[0] !== this.food.x || this.snake.ypos[0] !== this.food.y) {
                         break;
                     }
+
+                    this.food.x = Math.floor(Math.random() * 19 + 1);
+                    this.food.y = Math.floor(Math.random() * 19 + 1);
                 }
             }
 
