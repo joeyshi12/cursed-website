@@ -3,17 +3,16 @@ const height = 400;
 const padding = 40;
 const paddleWidth = 10;
 const paddleHeight = 70;
-const paddleSpeed = 8;
-const ballDiameter = 10;
-const ballSpeed = 12;
-const maxBounceAngle = 5 * Math.PI / 12;
+const paddleSpeed = 6;
+const ballDiameter = 12;
+const ballSpeed = 10;
+const maxBounceAngle = Math.PI / 3;
 const buffer = 12;
 
 class Paddle {
     constructor(x) {
         this.x = x;
         this.y = (height - paddleHeight) / 2;
-        this.dy = 0;
     }
 
     update() {
@@ -33,12 +32,17 @@ class Player extends Paddle {
     }
 
     update() {
-        this.dy = this.moveUp ? -paddleSpeed : 0;
-        this.dy += this.moveDown ? paddleSpeed : 0;
+        let dy = 0;
 
-        if (0 < this.y + this.dy && this.y + this.dy < height - paddleHeight) {
-            this.y += this.dy;
+        if (0 < this.y && this.moveUp) {
+            dy -= paddleSpeed;
         }
+
+        if (this.y < height - paddleHeight && this.moveDown) {
+            dy += paddleSpeed;
+        }
+
+        this.y += dy;
     }
 }
 
@@ -48,20 +52,26 @@ class Opponent extends Paddle {
     }
 
     update(ball) {
-        this.follow(ball);
-        if (0 < this.y + this.dy && this.y + this.dy < height - paddleHeight) {
-            this.y += this.dy;
+        let dy = this.getVelocity(ball);
+
+
+        if (0 < this.y && dy < 0) {
+            this.y += dy;
+        }
+
+        if (this.y < height - paddleHeight && dy > 0) {
+            this.y += dy;
         }
     }
 
-    follow(ball) {
+    getVelocity(ball) {
         let dy = this.y - ball.y + paddleHeight / 2;
         if (dy > 5) {
-            this.dy = -paddleSpeed;
+            return -paddleSpeed;
         } else if (dy < 5) {
-            this.dy = paddleSpeed;
+            return paddleSpeed;
         } else {
-            this.dy = 0;
+            return 0;
         }
     }
 }
@@ -98,6 +108,7 @@ class GameRun {
         this.tallyPlayer = 0;
         this.tallyOpponent = 0;
         this.bounceSound = null;
+        this.countDown = 0;
     }
 
     update() {
@@ -105,23 +116,31 @@ class GameRun {
             this.reset();
         }
 
-        if (this.player.x <= this.ball.x && this.ball.x <= this.player.x + paddleWidth + buffer) {
-            if (this.player.y < this.ball.y && this.ball.y < this.player.y + paddleHeight) {
-                const t = 2 * (this.ball.y - this.player.y - paddleHeight / 2) / paddleHeight;
-                const angle = Math.atan(t * maxBounceAngle);
+        if (this.ball.dx < 0) {
+            if (this.player.x <= this.ball.x && this.ball.x <= this.player.x + paddleWidth + buffer) {
+                if (this.player.y < this.ball.y && this.ball.y < this.player.y + paddleHeight) {
+                    const t = 2 * (this.ball.y - this.player.y - paddleHeight / 2) / paddleHeight;
+                    const angle = Math.atan(t * maxBounceAngle);
 
-                this.ball.dx = ballSpeed * Math.cos(angle);
-                this.ball.dy = ballSpeed * Math.sin(angle);
-                this.bounceSound.play();
+                    this.ball.dx = ballSpeed * Math.cos(angle);
+                    this.ball.dy = ballSpeed * Math.sin(angle);
+                    if (this.bounceSound) {
+                        this.bounceSound.play();
+                    }
+                }
             }
-        } else if (this.opponent.x - buffer <= this.ball.x && this.ball.x <= this.opponent.x + paddleWidth) {
-            if (this.opponent.y < this.ball.y && this.ball.y < this.opponent.y + paddleHeight) {
-                const t = 2 * (this.ball.y - this.opponent.y - paddleHeight / 2) / paddleHeight;
-                const angle = Math.atan(t * maxBounceAngle);
+        } else if (this.ball.dx > 0) {
+            if (this.opponent.x - buffer <= this.ball.x && this.ball.x <= this.opponent.x + paddleWidth) {
+                if (this.opponent.y < this.ball.y && this.ball.y < this.opponent.y + paddleHeight) {
+                    const t = 2 * (this.ball.y - this.opponent.y - paddleHeight / 2) / paddleHeight;
+                    const angle = Math.atan(t * maxBounceAngle);
 
-                this.ball.dx = -ballSpeed * Math.cos(angle);
-                this.ball.dy = ballSpeed * Math.sin(angle);
-                this.bounceSound.play();
+                    this.ball.dx = -ballSpeed * Math.cos(angle);
+                    this.ball.dy = ballSpeed * Math.sin(angle);
+                    if (this.bounceSound) {
+                        this.bounceSound.play();
+                    }
+                }
             }
         }
 
@@ -139,9 +158,23 @@ class GameRun {
             this.tallyPlayer += 1;
         }
 
+        const next_dx = this.ball.dx;
+        this.ball.dx = 0;
         this.ball.dy = 0;
         this.ball.x = width / 2;
         this.ball.y = height / 2;
+
+        this.countDown = 3;
+        setTimeout(() => {
+            this.countDown--;
+            setTimeout(() => {
+                this.countDown--;
+                setTimeout(() => {
+                    this.countDown--;
+                    this.ball.dx = next_dx;
+                }, 600)
+            }, 600);
+        }, 600)
     }
 
     checkGameOver() {
@@ -168,9 +201,14 @@ class GameRun {
         textSize(32);
         text(this.tallyPlayer, 160, 40);
         text(this.tallyOpponent, 420, 40);
+        this.ball.draw();
         this.player.draw();
         this.opponent.draw();
-        this.ball.draw();
+
+        if (this.countDown > 0) {
+            textSize(32);
+            text(this.countDown, width / 2 - 10, height / 2 - 20);
+        }
     }
 }
 
@@ -195,7 +233,6 @@ function keyReleased() {
 function draw() {
     background(0);
     fill(255, 255, 255);
-    stroke(255, 255, 255);
     line(width / 2, 0, width / 2, height);
     gameRun.draw();
     gameRun.update();
